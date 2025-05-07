@@ -5,7 +5,3 @@ coverage
 *.log
 package-lock.json
 yarn.lock
-
-# Ignore specific auto-generated files if any
-# src/serviceWorker.ts
-# src/reportWebVitals.ts 

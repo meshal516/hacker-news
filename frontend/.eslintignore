@@ -3,7 +3,3 @@ build
 dist
 coverage
 *.log
-
-# Ignore specific auto-generated files if any
-# src/serviceWorker.ts
-# src/reportWebVitals.ts 
