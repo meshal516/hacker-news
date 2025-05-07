@@ -1,0 +1,12 @@
+.MuiDataGrid-root {
+  border-radius: 12px !important;
+  overflow: hidden;
+
+  .MuiDataGrid-cell {
+    padding: 16px;
+  }
+
+  .even {
+    background-color: rgba(244, 246, 248, 0.5);
+  }
+}
