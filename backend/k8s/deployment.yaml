@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hacker-news-backend
+  labels:
+    app: hacker-news-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: hacker-news-backend
+  template:
+    metadata:
+      labels:
+        app: hacker-news-backend
+    spec:
+      containers:
+        - name: hacker-news-backend-container
+          image: registry.digitalocean.com/hacker-news/hacker-news-backend:latest
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DJANGO_SETTINGS_MODULE
+              value: "settings"
+            - name: DJANGO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: hacker-news-secrets
+                  key: DJANGO_SECRET_KEY
+            - name: RDS_DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: hacker-news-secrets
+                  key: RDS_DB_NAME
+            - name: RDS_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: hacker-news-secrets
+                  key: RDS_USERNAME
+            - name: RDS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: hacker-news-secrets
+                  key: RDS_PASSWORD
+            - name: RDS_HOSTNAME
+              valueFrom:
+                secretKeyRef:
+                  name: hacker-news-secrets
+                  key: RDS_HOSTNAME
+            - name: RDS_PORT
+              value: "5432"
+            - name: REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: hacker-news-secrets
+                  key: REDIS_URL
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              valueFrom:
+                secretKeyRef:
+                  name: hacker-news-secrets
+                  key: KAFKA_BOOTSTRAP_SERVERS
+            - name: KAFKA_SECURITY_PROTOCOL
+              value: "SASL_SSL"
+            - name: KAFKA_SASL_MECHANISM
+              value: "PLAIN"
+            - name: KAFKA_SASL_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: hacker-news-secrets
+                  key: KAFKA_SASL_USERNAME
+            - name: KAFKA_SASL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: hacker-news-secrets
+                  key: KAFKA_SASL_PASSWORD
+            - name: KAFKA_TOPIC_PREFIX
+              value: "hackernews_prod_"
+            - name: DJANGO_ALLOWED_HOSTS
+              value: "hacker-news,localhost"
+            - name: DJANGO_DEBUG
+              value: "False"
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"

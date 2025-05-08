@@ -1,0 +1,18 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: schedule-hn-fetch
+spec:
+  schedule: "*/15 * * * *" # Runs every 15 minutes. Adjust as needed.
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: schedule-hn-fetch-job
+              image: registry.digitalocean.com/hacker-news/hacker-news-backend:latest
+              command: ["python", "manage.py", "schedule_hn_fetch"]
+              envFrom: # Efficient way to load all secrets/configmaps
+                - secretRef:
+                    name: hacker-news-secrets # Assuming your Kafka & other relevant configs are here
+          restartPolicy: OnFailure # Or Never

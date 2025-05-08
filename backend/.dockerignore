@@ -1,0 +1,55 @@
+# Python bytecode
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+.venv/
+venv/
+ENV/
+env/
+
+# IDE and editor specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Docker files themselves (if in the same directory)
+# Dockerfile
+# .dockerignore
+
+# Git files
+.git
+.gitignore
+
+# Test reports and coverage
+htmlcov/
+.coverage
+.pytest_cache/
+
+# Secrets and local config
+.env
+*.local
+
+# Media files (if large and not part of the image, adjust as needed)
+# media/
+
+# Static files (if collected outside the container or via CDN, adjust as needed)
+# staticfiles/
+
+# Logs
+*.log
+logs/
+
+# Other build artifacts
+*.tar.gz
+*.zip
+
+docker-compose.yml
+docker-compose.yaml 

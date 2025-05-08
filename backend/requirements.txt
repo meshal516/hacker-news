@@ -1,0 +1,31 @@
+# Core Django
+django>=4.2,<5.0
+djangorestframework>=3.14,<3.15
+psycopg2-binary>=2.9,<3.0  # Postgres driver
+django-cors-headers>=3.0,<4.0 # Added for CORS
+
+# Caching
+django-redis>=5.3,<5.4
+
+# Background Tasks & Message Queues
+redis>=5.0,<5.1  # For django-redis
+confluent-kafka>=2.3 # For Kafka integration
+
+# API & HTTP
+requests>=2.31,<2.32
+drf-spectacular>=0.27,<0.28  # For OpenAPI Schema generation
+uvicorn>=0.20,<0.21 
+
+# Production WSGI Server
+gunicorn>=21.2,<22.0
+
+# Utilities
+python-dotenv>=1.0,<1.1 # For managing environment variables
+
+# Testing
+pytest>=7.4,<7.5
+pytest-django>=4.7,<4.8
+pytest-cov>=4.1,<4.2  # For coverage reports (optional)
+requests-mock>=1.11,<1.12 # For mocking HTTP requests in tests (optional)
+pytest-mock>=3.10,<4.0 # For mocking objects and functions
+
