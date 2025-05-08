@@ -1,8 +1,3 @@
-python3 -m venv venv  
-source venv/bin/activate
-python manage.py runserver  
- python manage.py fetch_hn_stories
-
 # Hacker News Analytics Dashboard
 
 This project provides a full-stack application to fetch, analyze, and visualize data from the Hacker News API, focusing on AI-related topics and trends. It includes a Django backend API and a React frontend dashboard.
@@ -86,9 +81,24 @@ hacker-news/
 
 5.  **Apply Database Migrations:**
     Ensure your PostgreSQL server is running and accessible with the credentials in your `.env` file.
+
     ```bash
     python manage.py migrate
     ```
+
+6.  **Manual Data Fetching (Optional):**
+    While data fetching is typically handled automatically via the background Kafka consumer, you can manually trigger a fetch and processing cycle using a management command. This is useful for initial population or debugging.
+    ```bash
+    # Ensure your backend virtual environment is active
+    python manage.py fetch_hn_stories
+    ```
+    This command will:
+    - Fetch the latest top story IDs from the Hacker News API.
+    - Fetch details for each story.
+    - Process stories (detect AI keywords, extract domains).
+    - Save/update stories, keywords, and domain stats in the database.
+    - Update the Redis cache for individual stories.
+    - Clear relevant aggregate Redis cache keys (`stories_list_*`, `ai_keywords`, etc.).
 
 ## Frontend Setup (React)
 
