@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: consumer-fetch-stories
+  labels:
+    app: consumer-fetch-stories
+spec:
+  replicas: 1 # Typically 1 replica per partition, or adjust based on load
+  selector:
+    matchLabels:
+      app: consumer-fetch-stories
+  template:
+    metadata:
+      labels:
+        app: consumer-fetch-stories
+    spec:
+      containers:
+        - name: consumer-fetch-stories-container
+          image: registry.digitalocean.com/hacker-news/hacker-news-backend:latest
+          # Command to run the Kafka consumer for fetch_stories
+          command: ["python", "manage.py", "consume_fetch_stories"]
+          env:
+            - name: DJANGO_SETTINGS_MODULE
+              value: "settings"
+            - name: DJANGO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: hacker-news-secrets
+                  key: DJANGO_SECRET_KEY
+            - name: RDS_DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: hacker-news-secrets
+                  key: RDS_DB_NAME
+            - name: RDS_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: hacker-news-secrets
+                  key: RDS_USERNAME
+            - name: RDS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: hacker-news-secrets
+                  key: RDS_PASSWORD
+            - name: RDS_HOSTNAME
+              valueFrom:
+                secretKeyRef:
+                  name: hacker-news-secrets
+                  key: RDS_HOSTNAME
+            - name: RDS_PORT
+              value: "5432"
+            - name: REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: hacker-news-secrets
+                  key: REDIS_URL
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              valueFrom:
+                secretKeyRef:
+                  name: hacker-news-secrets
+                  key: KAFKA_BOOTSTRAP_SERVERS
+            - name: KAFKA_SECURITY_PROTOCOL
+              value: "SASL_SSL"
+            - name: KAFKA_SASL_MECHANISM
+              value: "PLAIN"
+            - name: KAFKA_SASL_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: hacker-news-secrets
+                  key: KAFKA_SASL_USERNAME
+            - name: KAFKA_SASL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: hacker-news-secrets
+                  key: KAFKA_SASL_PASSWORD
+            - name: KAFKA_TOPIC_PREFIX
+              value: "hackernews_prod_"
+            - name: DJANGO_DEBUG
+              value: "False"
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "250m"
