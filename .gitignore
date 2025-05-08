@@ -20,5 +20,5 @@ __pycache__/**
 .DS_Store
 package-lock.json
 yarn.lock
-README.md
+
 
