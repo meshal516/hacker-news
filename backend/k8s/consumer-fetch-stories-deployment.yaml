@@ -5,7 +5,7 @@ metadata:
   labels:
     app: consumer-fetch-stories
 spec:
-  replicas: 1 # Typically 1 replica per partition, or adjust based on load
+  replicas: 1
   selector:
     matchLabels:
       app: consumer-fetch-stories

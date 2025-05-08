@@ -1,5 +1,5 @@
 from django.utils import timezone
-from django.db.models import Count
+from django.db.models import Count, Avg
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -112,12 +112,12 @@ class InsightsViewSet(viewsets.ViewSet):
     @action(detail=False, methods=['get'])
     def top_domains(self, request):
         """Get top domains by frequency"""
-        cache_key = 'top_domains'
         limit = int(request.query_params.get('limit', 10))
+        cache_key = f'top_domains_limit_{limit}'
         
         cached_data = cache.get(cache_key)
         if cached_data:
-            return Response(cached_data[:limit])
+            return Response(cached_data) 
         
         domains = DomainStats.objects.all().order_by('-count')[:limit]
         serializer = DomainStatsSerializer(domains, many=True)

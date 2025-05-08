@@ -21,7 +21,7 @@ spec:
             - containerPort: 8000
           env:
             - name: DJANGO_SETTINGS_MODULE
-              value: "settings" # Assuming settings.py is at the root of your app in the container
+              value: "settings"
             - name: DJANGO_SECRET_KEY
               valueFrom:
                 secretKeyRef:

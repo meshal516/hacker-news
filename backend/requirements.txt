@@ -2,6 +2,7 @@
 django>=4.2,<5.0
 djangorestframework>=3.14,<3.15
 psycopg2-binary>=2.9,<3.0  # Postgres driver
+django-cors-headers>=3.0,<4.0 # Added for CORS
 
 # Caching
 django-redis>=5.3,<5.4

@@ -1,6 +1,8 @@
-# services/keyword_detector.py
 import re
 from django.conf import settings
+import logging 
+
+logger = logging.getLogger(__name__) 
 
 class KeywordDetector:
     """Service for detecting AI-related keywords in text"""
@@ -49,7 +51,7 @@ class KeywordDetector:
                     found_keywords_set.add(keyword) 
             except re.error as e:
                 # Log regex compilation errors if a keyword is problematic
-                print(f"Regex error for keyword '{keyword}': {e}") # Consider using logging
+                logger.error(f"Regex error compiling pattern for keyword '{keyword}': {e}")
         
         # 2. Process variants from the VARIANT_MAP
         # This allows specific patterns to map to one or more canonical keywords

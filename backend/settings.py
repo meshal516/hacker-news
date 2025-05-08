@@ -71,14 +71,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'rest_framework',
     'drf_spectacular',
     'django_redis',
-    'core',
+    'core.apps.CoreConfig',
     'api',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -87,6 +89,14 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# CORS CONFIGURATION
+# ==============================================================================
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # React frontend development server
+]
+
+# ==============================================================================
 
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-=+s#eq#s$p@0v^@y(l5z7*k%h&9t&q3!x_g8o9f@w#z@b2q6u7') # Replace in production!
 

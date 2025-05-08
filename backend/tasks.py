@@ -230,11 +230,18 @@ def fetch_top_stories_logic(message_payload=None):
 
     logger.info(f"Processed {processed_story_count} stories in DB: {new_count} new, {updated_count} updated. {failed_fetches} failed fetches.")
 
-    # Clear relevant cache keys
-    cache.delete('stories_list') # Delete generic list cache
-    # Consider more granular cache invalidation if filters are used often
-    cache.delete('ai_keywords')
-    cache.delete('top_domains') # Domain stats were updated
+    # Clear relevant cache keys using patterns since django-redis is used
+    if hasattr(cache, 'delete_pattern'):
+        logger.info("tasks.py: Clearing cache patterns after story fetch.")
+        cache.delete_pattern("stories_list_*")
+        cache.delete_pattern("story_*")
+        cache.delete("ai_keywords") # This is a fixed key
+        cache.delete_pattern("top_domains_limit_*")
+    else:
+        logger.warning("tasks.py: Cache backend does not support delete_pattern. Clearing specific keys only.")
+        cache.delete('stories_list') 
+        cache.delete('ai_keywords')
+        cache.delete('top_domains')
 
     return {
         "status": "success", 
