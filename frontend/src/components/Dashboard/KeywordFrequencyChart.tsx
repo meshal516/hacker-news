@@ -28,22 +28,7 @@ const KeywordFrequencyChart: React.FC = () => {
   const chartRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // fetchKeywordFrequency(); // We'll comment this out for now to use mock data
-    // Simulate fetching mock data
-    const mockData = [
-      { keyword: "React", count: 150 },
-      { keyword: "TypeScript", count: 120 },
-      { keyword: "AI", count: 100 },
-      { keyword: "Web Dev", count: 90 },
-      { keyword: "Mobile", count: 80 },
-      { keyword: "Data Science", count: 70 },
-      { keyword: "Security", count: 60 },
-      { keyword: "Cloud", count: 50 },
-      { keyword: "DevOps", count: 40 },
-      { keyword: "Testing", count: 30 },
-    ];
-
-    useInsightStore.setState({ keywordFrequency: mockData, isLoading: false });
+    fetchKeywordFrequency();
   }, [fetchKeywordFrequency]);
 
   if (isLoading) {

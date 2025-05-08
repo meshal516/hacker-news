@@ -1,55 +1,15 @@
+import React, { useEffect } from "react";
 import { DataGrid, GridColDef, GridRowParams } from "@mui/x-data-grid";
-import { Typography, Chip, Checkbox } from "@mui/material";
+import {
+  Typography,
+  Chip,
+  Checkbox,
+  CircularProgress,
+  Box,
+  Alert,
+} from "@mui/material";
 import { format } from "date-fns";
-
-// Mock data for stories
-const stories = [
-  {
-    id: 1,
-    title: "AI Takes Over The World",
-    domain: "techcrunch.com",
-    score: 150,
-    comments_count: 42,
-    timestamp: new Date().toISOString(),
-    is_ai_related: true,
-  },
-  {
-    id: 2,
-    title: "New JavaScript Framework Released",
-    domain: "dev.to",
-    score: 90,
-    comments_count: 23,
-    timestamp: new Date().toISOString(),
-    is_ai_related: false,
-  },
-  {
-    id: 3,
-    title: "Understanding Quantum Computing",
-    domain: "medium.com",
-    score: 120,
-    comments_count: 30,
-    timestamp: new Date().toISOString(),
-    is_ai_related: true,
-  },
-  {
-    id: 4,
-    title: "The Future of Remote Work",
-    domain: "forbes.com",
-    score: 75,
-    comments_count: 15,
-    timestamp: new Date().toISOString(),
-    is_ai_related: false,
-  },
-  {
-    id: 5,
-    title: "Advanced AI in Medical Diagnosis",
-    domain: "nature.com",
-    score: 200,
-    comments_count: 55,
-    timestamp: new Date().toISOString(),
-    is_ai_related: true,
-  },
-];
+import { useStoryStore } from "../../store/storyStore";
 
 const columns: GridColDef[] = [
   {
@@ -91,6 +51,41 @@ const columns: GridColDef[] = [
 ];
 
 const StoryTable: React.FC = () => {
+  const { stories, isLoading, error, fetchStories, filters } = useStoryStore();
+
+  useEffect(() => {
+    fetchStories();
+  }, [fetchStories, filters]);
+
+  if (isLoading) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: 400,
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: 400,
+        }}
+      >
+        <Alert severity="error">{error}</Alert>
+      </Box>
+    );
+  }
   return (
     <div style={{ height: 600, width: "100%" }}>
       <DataGrid

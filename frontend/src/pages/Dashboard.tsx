@@ -1,8 +1,18 @@
-import React from "react";
-import { Box, Grid, Paper, Typography, Avatar, Card } from "@mui/material";
+import React, { useEffect } from "react";
+import {
+  Box,
+  Grid,
+  Paper,
+  Typography,
+  Avatar,
+  Card,
+  CircularProgress,
+  Alert,
+} from "@mui/material";
 import { Article, Assessment, Insights } from "@mui/icons-material";
 import KeywordFrequencyChart from "../components/Dashboard/KeywordFrequencyChart";
 import TopDomainsChart from "../components/Dashboard/TopDomainsChart";
+import { useInsightStore } from "../store/insightStore";
 
 interface SummaryCardProps {
   title: string;
@@ -45,34 +55,39 @@ const SummaryCard: React.FC<SummaryCardProps> = ({
 };
 
 const Dashboard: React.FC = () => {
-  // Mock data for summary cards
-  const summaryStats = {
-    totalStories: 1234,
-    aiRelatedCount: 568,
-    uniqueDomains: 240,
-    avgScore: 34.8,
-  };
+  const {
+    statsSummary,
+    fetchStatsSummary,
+    isLoading: insightsLoading,
+    error: insightsError,
+  } = useInsightStore();
 
-  const summaryData: SummaryCardProps[] = [
-    {
-      title: "Total Stories",
-      value: summaryStats.totalStories.toLocaleString(),
-      icon: <Article />,
-      avatarColor: "primary.light",
-    },
-    {
-      title: "AI Related Stories",
-      value: summaryStats.aiRelatedCount.toLocaleString(),
-      icon: <Insights />,
-      avatarColor: "secondary.light",
-    },
-    {
-      title: "Unique Domains",
-      value: summaryStats.uniqueDomains.toLocaleString(),
-      icon: <Assessment />,
-      avatarColor: "info.light",
-    },
-  ];
+  useEffect(() => {
+    fetchStatsSummary();
+  }, [fetchStatsSummary]);
+
+  const summaryData: SummaryCardProps[] = statsSummary
+    ? [
+        {
+          title: "Total Stories Processed",
+          value: statsSummary.total_stories.toLocaleString(),
+          icon: <Article />,
+          avatarColor: "primary.light",
+        },
+        {
+          title: "AI Related Stories",
+          value: statsSummary.ai_related_count.toLocaleString(),
+          icon: <Insights />,
+          avatarColor: "secondary.light",
+        },
+        {
+          title: "Unique Domains Tracked",
+          value: statsSummary.unique_domains.toLocaleString(),
+          icon: <Assessment />,
+          avatarColor: "info.light",
+        },
+      ]
+    : [];
 
   return (
     <Box sx={{ p: { xs: 2, sm: 3 }, flexGrow: 1 }}>
@@ -89,22 +104,35 @@ const Dashboard: React.FC = () => {
       <Typography variant="subtitle1" color="text.secondary" sx={{ mb: 4 }}>
         Overview of Hacker News story analytics and trends.
       </Typography>
-      <Grid container spacing={{ xs: 2, md: 3 }} sx={{ mb: 4 }}>
-        {summaryData.map((item, index) => (
-          <Grid size={{ xs: 12, lg: 6 }} key={index}>
-            {" "}
-            {/* Adjusted lg for 4 cards */}
-            <SummaryCard
-              title={item.title}
-              value={item.value}
-              icon={item.icon}
-              avatarColor={item.avatarColor}
-            />
+      {insightsLoading && !statsSummary && (
+        <Box sx={{ display: "flex", justifyContent: "center", my: 4 }}>
+          <CircularProgress />
+        </Box>
+      )}
+      {insightsError && (
+        <Alert severity="error" sx={{ my: 2 }}>
+          Error loading summary statistics: {insightsError}
+        </Alert>
+      )}
+      {!insightsLoading &&
+        !insightsError &&
+        statsSummary &&
+        summaryData.length > 0 && (
+          <Grid container spacing={{ xs: 2, md: 3 }} sx={{ mb: 4 }}>
+            {summaryData.map((item, index) => (
+              <Grid size={{ xs: 12, md: 6, lg: 4 }} key={index}>
+                <SummaryCard
+                  title={item.title}
+                  value={item.value}
+                  icon={item.icon}
+                  avatarColor={item.avatarColor}
+                />
+              </Grid>
+            ))}
           </Grid>
-        ))}
-      </Grid>
+        )}
       <Grid container spacing={{ xs: 2, md: 3 }}>
-        <Grid size={{ xs: 12, lg: 6 }}>
+        <Grid size={{ xs: 12, md: 6, lg: 4 }}>
           <Paper
             elevation={2}
             sx={{

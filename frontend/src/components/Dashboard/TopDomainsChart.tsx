@@ -13,22 +13,7 @@ const TopDomainsChart: React.FC = () => {
   const chartRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // fetchTopDomains(10); // We'll comment this out for now to use mock data
-    // Simulate fetching mock data
-    const mockData: DomainStats[] = [
-      { domain: "github.com", count: 120, last_updated: "2023-10-26" },
-      { domain: "stackoverflow.com", count: 100, last_updated: "2023-10-26" },
-      { domain: "medium.com", count: 80, last_updated: "2023-10-26" },
-      { domain: "dev.to", count: 70, last_updated: "2023-10-26" },
-      { domain: "freecodecamp.org", count: 60, last_updated: "2023-10-26" },
-      { domain: "reddit.com", count: 50, last_updated: "2023-10-26" },
-      { domain: "news.ycombinator.com", count: 40, last_updated: "2023-10-26" },
-      { domain: "producthunt.com", count: 30, last_updated: "2023-10-26" },
-      { domain: "indiehackers.com", count: 20, last_updated: "2023-10-26" },
-      { domain: "hashnode.com", count: 10, last_updated: "2023-10-26" },
-    ];
-
-    useInsightStore.setState({ topDomains: mockData, isLoading: false });
+    fetchTopDomains(10);
   }, [fetchTopDomains]);
 
   if (isLoading) {
