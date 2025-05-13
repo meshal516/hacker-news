@@ -23,6 +23,8 @@ hacker-news/
 └── README.md     # This file
 ```
 
+## High Level Architechure
+![High Level Architecture HN](https://raw.githubusercontent.com/meshal516/hacker-news/refs/heads/main/HL_Arch_HN.png)
 ## Backend Setup (Django)
 
 1.  **Navigate to Backend Directory:**
