@@ -1,6 +1,19 @@
 # Hacker News Analytics Dashboard
 
-This project provides a full-stack application to fetch, analyze, and visualize data from the Hacker News API, focusing on AI-related topics and trends. It includes a Django backend API and a React frontend dashboard.
+This project provides a production-ready, distrubted full-stack application to fetch, analyze, and visualize data from the Hacker News API, focusing on AI-related topics and trends. It includes a Django backend API and a React frontend dashboard.
+
+## Key Technologies
+
+- **Backend:** Django, Django REST Framework, PostgreSQL, Redis, Kafka (confluent-kafka), django-cors-headers, drf-spectacular
+- **Frontend:** React, TypeScript, Zustand, Axios, MUI (Material UI), Chart.js, react-chartjs-2, date-fns
+- **Testing:** Pytest (backend), React Testing Library (frontend potentially)
+
+## Architecture Overview (Simplified)
+
+- **Data Fetching:** A background task (triggered via Kubernetes and Kafka) periodically fetches data from the Hacker News API, processes it (detects AI keywords, extracts domains), and stores it in the PostgreSQL database.
+- **Caching:** Redis is used to cache API responses (stories, insights) for faster retrieval.
+- **API:** The Django backend exposes RESTful API endpoints (`/api/stories/`, `/api/insights/`).
+- **Frontend:** The React application consumes data from the backend API using Zustand for state management and displays it using MUI components and Chart.js.
 
 ## Prerequisites
 
@@ -14,17 +27,10 @@ Before you begin, ensure you have the following installed:
 - **Git:** For cloning the repository.
 - **(Optional) Docker & Docker Compose:** Recommended for easily running Postgres, Redis, and Kafka locally.
 
-## Project Structure
-
-```
-hacker-news/
-├── backend/      # Django API, data fetching, processing
-├── frontend/     # React UI dashboard
-└── README.md     # This file
-```
 
 ## High Level Architechure
 ![High Level Architecture HN](https://raw.githubusercontent.com/meshal516/hacker-news/refs/heads/main/HL_Arch_HN.png)
+
 ## Backend Setup (Django)
 
 1.  **Navigate to Backend Directory:**
@@ -82,14 +88,14 @@ hacker-news/
     ```
 
 5.  **Apply Database Migrations:**
-    Ensure your PostgreSQL server is running and accessible with the credentials in your `.env` file.
+    Ensure your PostgreSQL server is running and accessible with the credentials in your `.env` file.  Then, run the command below to apply the migration script to the PostgreSQL database.
 
     ```bash
     python manage.py migrate
     ```
 
 6.  **Manual Data Fetching (Optional):**
-    While data fetching is typically handled automatically via the background Kafka consumer, you can manually trigger a fetch and processing cycle using a management command. This is useful for initial population or debugging.
+    While data fetching is typically handled automatically via the background kubernetes cron job, you can manually trigger a fetch and processing cycle using a management command. This is useful for initial population or debugging.
     ```bash
     # Ensure your backend virtual environment is active
     python manage.py fetch_hn_stories
@@ -131,12 +137,12 @@ hacker-news/
 This application is designed to run in a containerized environment managed by Kubernetes (hosted on DigitalOcean) and utilizes managed cloud services for its dependencies.
 
 1.  **Obtain Credentials & Access:**
-    Team members need access to the following services and their corresponding credentials/connection details:
+    The repo needs access to the following services and their corresponding credentials/connection details:
 
-    - **Kafka:** Obtain connection details (bootstrap servers, API keys/secrets if using SASL) for the project's Kafka cluster hosted on **Confluent Cloud**. These are needed for the `KAFKA_*` variables in the backend `.env` file.
-    - **Redis:** Obtain the connection URL for the managed Redis instance hosted on **DigitalOcean**. This is needed for the `REDIS_URL` variable in the backend `.env` file.
-    - **PostgreSQL:** Obtain connection details for the managed PostgreSQL instance (likely also on DigitalOcean or another provider). These are needed for the `RDS_*` variables or `DATABASE_URL` in the backend `.env` file.
-    - **Kubernetes:** Obtain `kubectl` configuration/access details for the project's Kubernetes cluster hosted on **DigitalOcean**.
+    - **Kafka:** Obtain connection details (bootstrap servers, API keys/secrets if using SASL) for the project's Kafka cluster, hosted on **Confluent Cloud** in this project. These are needed for the `KAFKA_*` variables in the backend `.env` file.
+    - **Redis:** Obtain the connection URL for the managed Redis instance, hosted on **DigitalOcean** in this project. This is needed for the `REDIS_URL` variable in the backend `.env` file.
+    - **PostgreSQL:** Obtain connection details for the managed PostgreSQL instance, hosted in AWS in this project. These are needed for the `RDS_*` variables or `DATABASE_URL` in the backend `.env` file.
+    - **Kubernetes:** Obtain `kubectl` configuration/access details for the project's Kubernetes cluster, hosted on **DigitalOcean** in this project.
 
 2.  **Environment Variables:**
     Ensure your backend `.env` file (see Backend Setup) is configured with the correct credentials and endpoints for the managed **Confluent Kafka**, **DigitalOcean Redis**, and **PostgreSQL** instances mentioned above. The variables `DJANGO_SECRET_KEY`, `DJANGO_DEBUG`, and `DJANGO_ALLOWED_HOSTS` should also be set appropriately for the target environment.
@@ -147,15 +153,3 @@ This application is designed to run in a containerized environment managed by Ku
     - To view logs, manage deployments, or debug issues, use `kubectl` with the provided cluster access configuration. Refer to the project's Kubernetes configuration files (in the `k8s/` directory) for details on services, deployments, and pods.
     - Direct execution via `python manage.py runserver` or `npm start` is generally used for specific local debugging scenarios, but the primary interaction model is via the deployed Kubernetes environment.
 
-## Key Technologies
-
-- **Backend:** Django, Django REST Framework, PostgreSQL, Redis, Kafka (confluent-kafka), django-cors-headers, drf-spectacular
-- **Frontend:** React, TypeScript, Zustand, Axios, MUI (Material UI), Chart.js, react-chartjs-2, date-fns
-- **Testing:** Pytest (backend), React Testing Library (frontend potentially)
-
-## Architecture Overview (Simplified)
-
-- **Data Fetching:** A background task (triggered via Kafka) periodically fetches data from the Hacker News API, processes it (detects AI keywords, extracts domains), and stores it in the PostgreSQL database.
-- **Caching:** Redis is used to cache API responses (stories, insights) for faster retrieval.
-- **API:** The Django backend exposes RESTful API endpoints (`/api/stories/`, `/api/insights/`) protected by CORS headers.
-- **Frontend:** The React application consumes data from the backend API using Zustand for state management and displays it using MUI components and Chart.js.
